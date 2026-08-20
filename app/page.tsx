@@ -104,16 +104,16 @@ export default function Home() {
           <a href="#" className="flex items-center gap-3">
 
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#171717] font-bold text-white">
-              B
+              M
             </div>
 
             <div>
               <p className="text-lg font-bold">
-                Buying Bulk
+                My Bulk Deals
               </p>
 
               <p className="hidden text-[9px] uppercase tracking-[0.2em] text-black/40 sm:block">
-                Pakistan's smart grocery store
+                Pakistan's smart bulk marketplace
               </p>
             </div>
 
@@ -223,7 +223,7 @@ export default function Home() {
 
             <div className="mt-6 flex flex-wrap gap-3">
 
-              <a
+              
                 href="#shop"
                 className="rounded-full bg-[#171717] px-7 py-4 text-sm font-bold text-white"
               >
@@ -586,7 +586,7 @@ export default function Home() {
             </h2>
 
             <p className="mt-6 max-w-lg leading-7 text-white/50">
-              Enter your family size and monthly grocery budget. Buying Bulk
+              Enter your family size and monthly grocery budget. My Bulk Deals
               can recommend the essentials you need and prioritize products
               with better bulk value.
             </p>
@@ -768,11 +768,11 @@ export default function Home() {
               <div className="flex items-center gap-3">
 
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#171717] font-bold text-white">
-                  B
+                  M
                 </div>
 
                 <span className="text-xl font-bold">
-                  Buying Bulk
+                  My Bulk Deals
                 </span>
 
               </div>
@@ -804,7 +804,7 @@ export default function Home() {
             <div>
 
               <p className="text-xs font-bold uppercase tracking-widest">
-                Buying Bulk
+                My Bulk Deals
               </p>
 
               <div className="mt-4 space-y-3 text-sm text-black/45">
@@ -820,7 +820,7 @@ export default function Home() {
 
 
           <div className="mt-12 border-t border-black/10 pt-6 text-xs text-black/35">
-            © 2026 Buying Bulk · Smart grocery shopping for Pakistan
+            © 2026 My Bulk Deals · Smart grocery shopping for Pakistan
           </div>
 
         </div>
