@@ -223,7 +223,7 @@ export default function Home() {
 
             <div className="mt-6 flex flex-wrap gap-3">
 
-              
+              <a
                 href="#shop"
                 className="rounded-full bg-[#171717] px-7 py-4 text-sm font-bold text-white"
               >
