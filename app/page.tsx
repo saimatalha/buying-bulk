@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 const categories = [
@@ -84,10 +85,68 @@ function formatPrice(price: number) {
 
 export default function Home() {
   const [cart, setCart] = useState(0);
-  const [search, setSearch] = useState("");
-  const [showAI, setShowAI] = useState(false);
-  const [generated, setGenerated] = useState(false);
+const [search, setSearch] = useState("");
+const [showAI, setShowAI] = useState(false);
+const [generated, setGenerated] = useState(false);
 
+const [showChatbot, setShowChatbot] = useState(false);
+const [chatMessage, setChatMessage] = useState("");
+const [chatResponse, setChatResponse] = useState("");
+const [chatLoading, setChatLoading] = useState(false);
+const sendChatMessage = async () => {
+  if (!chatMessage.trim() || chatLoading) return;
+
+  const message = chatMessage;
+
+  setChatMessage("");
+  setChatLoading(true);
+
+  try {
+    const response = await fetch("/api/ai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: `
+You are MyBulkAI, the intelligent shopping assistant for MyBulkDeals,
+a Pakistani bulk grocery marketplace.
+
+Help customers with:
+- grocery recommendations
+- monthly ration planning
+- bulk shopping
+- saving money
+- grocery budgets
+- Pakistani grocery shopping
+
+Always use Pakistani Rupees (Rs.) when discussing prices.
+
+Customer message:
+${message}
+
+Give a helpful, concise and friendly response.
+        `,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "AI request failed");
+    }
+
+    setChatResponse(data.response);
+  } catch (error) {
+    console.error(error);
+
+    setChatResponse(
+      "I'm having trouble connecting right now. Please make sure Ollama is running."
+    );
+  } finally {
+    setChatLoading(false);
+  }
+};
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -102,21 +161,14 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
 
           <a href="#" className="flex items-center gap-3">
-
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#171717] font-bold text-white">
-              M
-            </div>
-
-            <div>
-              <p className="text-lg font-bold">
-                My Bulk Deals
-              </p>
-
-              <p className="hidden text-[9px] uppercase tracking-[0.2em] text-black/40 sm:block">
-                Pakistan's smart bulk marketplace
-              </p>
-            </div>
-
+            <Image
+              src="/logobulkdeal.png"
+              alt="MyBulkdeal"
+              width={190}
+              height={100}
+              className="h-auto w-[150px] object-contain sm:w-[190px]"
+              priority
+            />
           </a>
 
           <nav className="hidden gap-8 text-sm font-medium md:flex">
@@ -150,10 +202,10 @@ export default function Home() {
             </button>
 
             <button
-              onClick={() => setShowAI(true)}
-              className="rounded-full bg-[#171717] px-5 py-3 text-xs font-bold text-white"
+              onClick={() => setShowChatbot(true)}
+              className="rounded-full bg-[#171717] px-5 py-3 text-xs font-bold text-white transition hover:bg-[#78a83b]"
             >
-              ✦ AI RATION PLANNER
+              ✦ My Bulk AI
             </button>
 
           </div>
@@ -900,7 +952,183 @@ export default function Home() {
         </div>
 
       )}
+{/* MYBULKAI GLASSMORPHISM CHATBOT */}
 
+{showChatbot && (
+  <div className="fixed inset-0 z-[200] flex items-end justify-end bg-black/20 p-4 backdrop-blur-[2px] sm:p-6">
+
+    <div className="relative flex h-[620px] w-full max-w-[430px] flex-col overflow-hidden rounded-[32px] border border-white/40 bg-white/75 shadow-2xl backdrop-blur-2xl">
+
+      {/* CHAT HEADER */}
+
+      <div className="border-b border-black/10 bg-white/40 px-6 py-5 backdrop-blur-xl">
+
+        <div className="flex items-center justify-between">
+
+          <div className="flex items-center gap-3">
+
+            <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-[#171717] text-lg text-white shadow-lg">
+
+              ✦
+
+              <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-[#78a83b]" />
+
+            </div>
+
+            <div>
+
+              <p className="text-lg font-bold">
+                MyBulkAI
+              </p>
+
+              <p className="text-[11px] text-black/45">
+                Your smart grocery assistant
+              </p>
+
+            </div>
+
+          </div>
+
+          <button
+            onClick={() => setShowChatbot(false)}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-black/5 text-xl transition hover:bg-black/10"
+          >
+            ×
+          </button>
+
+        </div>
+
+      </div>
+
+
+      {/* CHAT CONTENT */}
+
+      <div className="flex-1 overflow-y-auto px-5 py-6">
+
+        <div className="max-w-[88%] rounded-3xl rounded-tl-md bg-white/80 p-4 shadow-sm backdrop-blur-xl">
+
+          <p className="text-sm font-semibold">
+            Hi! 👋 I'm MyBulkAI.
+          </p>
+
+          <p className="mt-2 text-sm leading-6 text-black/55">
+            I can help you plan your monthly ration, find smarter bulk
+            options, manage your grocery budget, and save money.
+          </p>
+
+        </div>
+
+
+        {/* QUICK ACTIONS */}
+
+        {!chatResponse && !chatLoading && (
+          <div className="mt-5 flex flex-wrap gap-2">
+
+            <button
+              onClick={() =>
+                setChatMessage(
+                  "Plan groceries for a family of 4 under Rs. 30,000."
+                )
+              }
+              className="rounded-full border border-black/10 bg-white/55 px-4 py-2 text-xs font-medium backdrop-blur-xl transition hover:bg-white"
+            >
+              Plan my ration
+            </button>
+
+            <button
+              onClick={() =>
+                setChatMessage(
+                  "How can I save money by buying groceries in bulk?"
+                )
+              }
+              className="rounded-full border border-black/10 bg-white/55 px-4 py-2 text-xs font-medium backdrop-blur-xl transition hover:bg-white"
+            >
+              Help me save
+            </button>
+
+            <button
+              onClick={() =>
+                setChatMessage(
+                  "What groceries should I buy in bulk?"
+                )
+              }
+              className="rounded-full border border-black/10 bg-white/55 px-4 py-2 text-xs font-medium backdrop-blur-xl transition hover:bg-white"
+            >
+              Bulk shopping
+            </button>
+
+          </div>
+        )}
+
+
+        {/* AI RESPONSE */}
+
+        {chatResponse && (
+          <div className="mt-6 max-w-[90%] rounded-3xl rounded-tl-md bg-[#eef4e5]/90 p-4 shadow-sm backdrop-blur-xl">
+
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[#5f812e]">
+              MyBulkAI
+            </p>
+
+            <p className="whitespace-pre-wrap text-sm leading-6 text-black/70">
+              {chatResponse}
+            </p>
+
+          </div>
+        )}
+
+
+        {/* LOADING */}
+
+        {chatLoading && (
+          <div className="mt-6 max-w-[80%] rounded-3xl rounded-tl-md bg-white/80 p-4 text-sm text-black/45 shadow-sm backdrop-blur-xl">
+
+            MyBulkAI is thinking...
+
+          </div>
+        )}
+
+      </div>
+
+
+      {/* CHAT INPUT */}
+
+      <div className="border-t border-black/10 bg-white/40 p-4 backdrop-blur-xl">
+
+        <div className="flex items-center gap-2 rounded-2xl border border-black/10 bg-white/75 p-2 shadow-sm backdrop-blur-xl">
+
+          <input
+            value={chatMessage}
+            onChange={(event) => setChatMessage(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                sendChatMessage();
+              }
+            }}
+            placeholder="Ask MyBulkAI anything..."
+            className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm outline-none placeholder:text-black/35"
+          />
+
+          <button
+            onClick={sendChatMessage}
+            disabled={!chatMessage.trim() || chatLoading}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#171717] text-white transition hover:bg-[#78a83b] disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            ↑
+          </button>
+
+        </div>
+
+        <p className="mt-2 text-center text-[9px] text-black/30">
+          Powered by local AI · MyBulkDeals
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+)}
     </main>
   );
 }
