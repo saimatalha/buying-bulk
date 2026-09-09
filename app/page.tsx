@@ -145,6 +145,7 @@ Give a helpful, concise and friendly response.
     ? error.message
     : "The AI service could not be reached. Please try again."
 );
+}    
 };
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
