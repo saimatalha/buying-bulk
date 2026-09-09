@@ -140,12 +140,11 @@ Give a helpful, concise and friendly response.
   } catch (error) {
     console.error(error);
 
-    setChatResponse(
-      "I'm having trouble connecting right now. Please make sure Ollama is running."
-    );
-  } finally {
-    setChatLoading(false);
-  }
+   setChatResponse(
+  error instanceof Error
+    ? error.message
+    : "The AI service could not be reached. Please try again."
+);
 };
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
